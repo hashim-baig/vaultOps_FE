@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import AddNewDomainTemplate from './AddNewDomainTemplate';
+import { createDomain } from '@/lib/api/domain';
 
 const AddNewDomain: React.FC = () => {
     const [open, setOpen] = useState(false);
@@ -12,10 +13,19 @@ const AddNewDomain: React.FC = () => {
         reset,
     } = useForm<DomainFormInputs>();
 
-    const onSubmit: SubmitHandler<DomainFormInputs> = (data) => {
-        console.log(data);
-        reset();
-        setOpen(false);
+    const onSubmit: SubmitHandler<DomainFormInputs> = async (data) => {
+        try {
+            await createDomain(data);
+            reset();
+            setOpen(false);
+            // Optionally show success toast/notification here
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error('Failed to create domain:', error.message);
+            } else {
+                console.error('Failed to create domain: Unknown error', error);
+            }
+        }
     };
 
     const handleOpenChange = (value: boolean) => {
