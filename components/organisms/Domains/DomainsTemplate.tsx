@@ -10,6 +10,7 @@ const DomainsTemplate: React.FC<DomainsProps> = ({ domainList }) => {
                     name={domain.name}
                     url={domain.url}
                     password={domain.password}
+                    previewImage={domain?.previewImage}
                 />
             ))}
         </div>
@@ -21,6 +22,7 @@ export type Domain = {
     name: string;
     url: string;
     password: string;
+    previewImage: string;
 };
 
 type DomainsProps = {

@@ -14,7 +14,6 @@ const Domains = () => {
         async function loadDomains() {
             try {
                 const domains = await fetchDomains();
-                console.log(domains);
                 setDomainList(domains);
             } catch (err: unknown) {
                 if (err instanceof Error) {
