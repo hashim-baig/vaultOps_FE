@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import DomainsTemplate, { Domain } from './DomainsTemplate';
+import { DomainCardSkeleton } from '@/components/molecules/DomainCard/DomainCardSkeleton';
 import { fetchDomains } from '@/lib/api/domain';
 
 const Domains = () => {
@@ -28,7 +29,7 @@ const Domains = () => {
         loadDomains();
     }, []);
 
-    if (loading) return <div>Loading domains...</div>;
+    if (loading) return <DomainCardSkeleton />;
     if (error) return <div>Error: {error}</div>;
 
     return <DomainsTemplate domainList={domainList} />;
