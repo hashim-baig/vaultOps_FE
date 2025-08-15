@@ -2,66 +2,34 @@
 
 import React, { useState, useEffect } from 'react';
 import DomainsTemplate, { Domain } from './DomainsTemplate';
-
-const domainL: Domain[] = [
-    {
-        name: 'google',
-        url: 'https://www.google.com',
-        password: 'password',
-    },
-    {
-        name: 'facebook',
-        url: 'https://www.facebook.com',
-        password: 'password',
-    },
-    {
-        name: 'instagram',
-        url: 'https://www.instagram.com',
-        password: 'password',
-    },
-    {
-        name: 'netflix',
-        url: 'https://www.netflix.com',
-        password: 'password',
-    },
-    {
-        name: 'amazon',
-        url: 'https://www.amazon.com',
-        password: 'password',
-    },
-    {
-        name: 'flipkart',
-        url: 'https://www.flipkart.com',
-        password: 'password',
-    },
-    {
-        name: 'amazon',
-        url: 'https://www.amazon.com',
-        password: 'password',
-    },
-    {
-        name: 'flipkart',
-        url: 'https://www.flipkart.com',
-        password: 'password',
-    },
-    {
-        name: 'amazon',
-        url: 'https://www.amazon.com',
-        password: 'password',
-    },
-    {
-        name: 'flipkart',
-        url: 'https://www.flipkart.com',
-        password: 'password',
-    },
-];
+import { fetchDomains } from '@/lib/api/domain';
 
 const Domains = () => {
     const [domainList, setDomainList] = useState<Domain[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        setDomainList(domainL);
+        async function loadDomains() {
+            try {
+                const domains = await fetchDomains();
+                console.log(domains);
+                setDomainList(domains);
+            } catch (err: unknown) {
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError('Unknown error');
+                }
+            } finally {
+                setLoading(false);
+            }
+        }
+        loadDomains();
     }, []);
+
+    if (loading) return <div>Loading domains...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return <DomainsTemplate domainList={domainList} />;
 };

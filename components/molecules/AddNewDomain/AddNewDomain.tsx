@@ -48,7 +48,7 @@ const AddNewDomain: React.FC = () => {
 
 export type DomainFormInputs = {
     name: string;
-    domain_url: string;
+    url: string;
     url_password?: string;
 };
 

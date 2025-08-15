@@ -59,10 +59,10 @@ const AddNewDomainTemplate: React.FC<AddNewDomainTemplateProps> = ({
                     <Label htmlFor="domain-url">Url</Label>
                     <Input
                         id="domain-url"
-                        {...register('domain_url', {
+                        {...register('url', {
                             required: 'Domain URL is required',
                             pattern: {
-                                value: /^(https?:\/\/)[^\s$.?#].[^\s]*$/i,
+                                value: /^(https?:\/\/)[^\s$.?#].\S*$/i,
                                 message: 'Enter a valid URL',
                             },
                         })}
@@ -70,7 +70,7 @@ const AddNewDomainTemplate: React.FC<AddNewDomainTemplateProps> = ({
                         defaultValue="https://"
                     />
                     <span className="min-h-[1rem] text-xs text-red-500">
-                        {errors.domain_url ? errors.domain_url.message : '\u00A0'}
+                        {errors.url ? errors.url.message : '\u00A0'}
                     </span>
                 </div>
 
