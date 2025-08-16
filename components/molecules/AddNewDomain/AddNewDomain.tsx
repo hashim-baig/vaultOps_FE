@@ -5,6 +5,7 @@ import { createDomain } from '@/lib/api/domain';
 
 const AddNewDomain: React.FC = () => {
     const [open, setOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {
         register,
@@ -14,6 +15,7 @@ const AddNewDomain: React.FC = () => {
     } = useForm<DomainFormInputs>();
 
     const onSubmit: SubmitHandler<DomainFormInputs> = async (data) => {
+        setIsSubmitting(true);
         try {
             await createDomain(data);
             reset();
@@ -25,6 +27,8 @@ const AddNewDomain: React.FC = () => {
             } else {
                 console.error('Failed to create domain: Unknown error', error);
             }
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -42,6 +46,7 @@ const AddNewDomain: React.FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             register={register}
             errors={errors}
+            isSubmitting={isSubmitting}
         />
     );
 };

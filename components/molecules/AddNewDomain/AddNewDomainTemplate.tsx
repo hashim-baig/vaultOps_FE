@@ -13,7 +13,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { IconWorldPlus } from '@tabler/icons-react';
 import { UseFormRegister, FieldErrors } from 'react-hook-form';
-import { DomainFormInputs } from './AddNewDomain'; // or wherever type is defined
+import { DomainFormInputs } from './AddNewDomain';
+import { Loader2Icon } from 'lucide-react';
 
 interface AddNewDomainTemplateProps {
     open: boolean;
@@ -21,6 +22,7 @@ interface AddNewDomainTemplateProps {
     onSubmit: React.FormEventHandler<HTMLFormElement>;
     register: UseFormRegister<DomainFormInputs>;
     errors: FieldErrors<DomainFormInputs>;
+    isSubmitting: boolean;
 }
 
 const AddNewDomainTemplate: React.FC<AddNewDomainTemplateProps> = ({
@@ -29,6 +31,7 @@ const AddNewDomainTemplate: React.FC<AddNewDomainTemplateProps> = ({
     onSubmit,
     register,
     errors,
+    isSubmitting,
 }) => (
     <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogTrigger asChild>
@@ -88,7 +91,11 @@ const AddNewDomainTemplate: React.FC<AddNewDomainTemplateProps> = ({
                     <DialogClose asChild>
                         <Button variant="outline">Cancel</Button>
                     </DialogClose>
-                    <Button type="submit">Add Domain</Button>
+
+                    <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting && <Loader2Icon className="animate-spin" />}
+                        {isSubmitting ? 'Adding...' : 'Add Domain'}
+                    </Button>
                 </DialogFooter>
             </form>
         </DialogContent>
