@@ -26,21 +26,17 @@ const AddNewDomain: React.FC = () => {
         reset,
     } = useForm<DomainFormInputs>();
 
-    const mutation = useMutation({
+    const mutation = useMutation<Domain, Error, DomainFormInputs>({
         mutationFn: (data: DomainFormInputs) => createDomain(data),
         onSuccess: async (data) => {
             reset();
             setOpen(false);
 
-            await queryClient.cancelQueries(['domains']);
+            await queryClient.cancelQueries({ queryKey: ['domains'] });
 
-            queryClient.setQueryData<Domain[]>(['domains'], (prev: Domain[]) => {
-                if (prev) {
-                    return [data, ...prev];
-                } else {
-                    return [data];
-                }
-            });
+            queryClient.setQueryData<Domain[]>(['domains'], (prev) =>
+                prev ? [data, ...prev] : [data],
+            );
 
             toast.success('Domain created successfully.');
         },
