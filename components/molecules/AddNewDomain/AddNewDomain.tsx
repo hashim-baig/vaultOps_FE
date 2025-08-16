@@ -1,11 +1,23 @@
+'use client';
+
 import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import AddNewDomainTemplate from './AddNewDomainTemplate';
 import { createDomain } from '@/lib/api/domain';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
+import { Domain } from '@/components/organisms/Domains/DomainsTemplate';
+
+export type DomainFormInputs = {
+    name: string;
+    url: string;
+    url_password?: string;
+};
 
 const AddNewDomain: React.FC = () => {
     const [open, setOpen] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const queryClient = useQueryClient();
 
     const {
         register,
@@ -14,22 +26,35 @@ const AddNewDomain: React.FC = () => {
         reset,
     } = useForm<DomainFormInputs>();
 
-    const onSubmit: SubmitHandler<DomainFormInputs> = async (data) => {
-        setIsSubmitting(true);
-        try {
-            await createDomain(data);
+    const mutation = useMutation({
+        mutationFn: (data: DomainFormInputs) => createDomain(data),
+        onSuccess: async (data) => {
             reset();
             setOpen(false);
-            // Optionally show success toast/notification here
-        } catch (error: unknown) {
+
+            await queryClient.cancelQueries(['domains']);
+
+            queryClient.setQueryData<Domain[]>(['domains'], (prev: Domain[]) => {
+                if (prev) {
+                    return [data, ...prev];
+                } else {
+                    return [data];
+                }
+            });
+
+            toast.success('Domain created successfully.');
+        },
+        onError: (error: unknown) => {
             if (error instanceof Error) {
                 console.error('Failed to create domain:', error.message);
             } else {
                 console.error('Failed to create domain: Unknown error', error);
             }
-        } finally {
-            setIsSubmitting(false);
-        }
+        },
+    });
+
+    const onSubmit: SubmitHandler<DomainFormInputs> = (data) => {
+        mutation.mutate(data);
     };
 
     const handleOpenChange = (value: boolean) => {
@@ -46,15 +71,9 @@ const AddNewDomain: React.FC = () => {
             onSubmit={handleSubmit(onSubmit)}
             register={register}
             errors={errors}
-            isSubmitting={isSubmitting}
+            isSubmitting={mutation.isPending}
         />
     );
-};
-
-export type DomainFormInputs = {
-    name: string;
-    url: string;
-    url_password?: string;
 };
 
 export default AddNewDomain;

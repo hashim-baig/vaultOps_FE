@@ -14,6 +14,7 @@ export async function createDomain(data: DomainFormInputs): Promise<void> {
         const errorData = await res.json();
         throw new Error(errorData.message || 'Failed to create domain');
     }
+    return res.json();
 }
 
 export async function fetchDomains(): Promise<Domain[]> {

@@ -1,37 +1,26 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import DomainsTemplate, { Domain } from './DomainsTemplate';
 import { DomainCardSkeleton } from '@/components/molecules/DomainCard/DomainCardSkeleton';
 import { fetchDomains } from '@/lib/api/domain';
+import { useQuery } from '@tanstack/react-query';
 
 const Domains = () => {
-    const [domainList, setDomainList] = useState<Domain[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const {
+        data: domainList,
+        isLoading,
+        isError,
+        error,
+    } = useQuery<Domain[], Error>({
+        queryKey: ['domains'],
+        queryFn: fetchDomains,
+    });
 
-    useEffect(() => {
-        async function loadDomains() {
-            try {
-                const domains = await fetchDomains();
-                setDomainList(domains);
-            } catch (err: unknown) {
-                if (err instanceof Error) {
-                    setError(err.message);
-                } else {
-                    setError('Unknown error');
-                }
-            } finally {
-                setLoading(false);
-            }
-        }
-        loadDomains();
-    }, []);
+    if (isLoading) return <DomainCardSkeleton />;
+    if (isError) return <div>Error: {error.message}</div>;
 
-    if (loading) return <DomainCardSkeleton />;
-    if (error) return <div>Error: {error}</div>;
-
-    return <DomainsTemplate domainList={domainList} />;
+    return <DomainsTemplate domainList={domainList ?? []} />;
 };
 
 export default Domains;

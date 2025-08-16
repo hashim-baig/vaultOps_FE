@@ -7,6 +7,7 @@ import {
     DialogTitle,
     DialogFooter,
     DialogClose,
+    DialogDescription,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -44,6 +45,9 @@ const AddNewDomainTemplate: React.FC<AddNewDomainTemplateProps> = ({
         <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
                 <DialogTitle>Add New Domain</DialogTitle>
+                <DialogDescription>
+                    Please fill in the details below to add a new domain.
+                </DialogDescription>
             </DialogHeader>
             <form onSubmit={onSubmit} className="grid gap-3" noValidate>
                 <div className="grid gap-2">
