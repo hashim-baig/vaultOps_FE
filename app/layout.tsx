@@ -2,13 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
-import { AppSidebar } from '@/components/app-sidebar';
-import { SiteHeader } from '@/components/site-header';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { Toaster } from '@/components/ui/sonner';
-
 import ThemeProvider from '@/components/theme-provider';
-
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 
 const geistSans = Geist({
@@ -34,29 +28,9 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <ReactQueryProvider>
-                    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-                        <SidebarProvider
-                            style={
-                                {
-                                    '--sidebar-width': 'calc(var(--spacing) * 72)',
-                                    '--header-height': 'calc(var(--spacing) * 12)',
-                                } as React.CSSProperties
-                            }
-                        >
-                            <AppSidebar variant="inset" />
-                            <SidebarInset>
-                                <SiteHeader />
-                                <div className="flex flex-1 flex-col">
-                                    <div className="@container/main flex flex-1 flex-col gap-2 p-5">
-                                        {children}
-                                    </div>
-                                </div>
-                            </SidebarInset>
-                        </SidebarProvider>
-                        <Toaster />
-                    </ThemeProvider>
-                </ReactQueryProvider>
+                <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+                    <ReactQueryProvider>{children}</ReactQueryProvider>
+                </ThemeProvider>
             </body>
         </html>
     );
