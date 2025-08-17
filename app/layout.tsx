@@ -5,6 +5,8 @@ import './globals.css';
 import ThemeProvider from '@/components/theme-provider';
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
 
+// import AuthHydration from "@/components/AuthHydration";
+
 const geistSans = Geist({
     variable: '--font-geist-sans',
     subsets: ['latin'],
@@ -29,7 +31,10 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-                    <ReactQueryProvider>{children}</ReactQueryProvider>
+                    <ReactQueryProvider>
+                        {/*<AuthHydration />*/}
+                        {children}
+                    </ReactQueryProvider>
                 </ThemeProvider>
             </body>
         </html>

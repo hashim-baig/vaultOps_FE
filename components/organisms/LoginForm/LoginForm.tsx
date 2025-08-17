@@ -24,8 +24,8 @@ const LoginForm: React.FC = () => {
         mutationFn: loginUser,
         onSuccess: (user) => {
             setUser(user); // Sync Zustand with returned user
-            reset();
             router.replace('/domains'); // Or wherever you want
+            reset();
         },
         onError: (error: any) => {
             setError('root', { type: 'manual', message: error.message });

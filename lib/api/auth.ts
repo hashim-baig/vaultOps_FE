@@ -32,3 +32,13 @@ export async function loginUser({ email, password }: { email: string; password: 
     if (!res.ok) throw new Error(data.message || 'Login failed');
     return data.user; // { id, name, email }
 }
+
+// services/auth.ts
+export async function fetchCurrentUser() {
+    const res = await fetch(`${API_BASE_URL}/auth/me`, {
+        method: 'GET',
+        credentials: 'include', // <-- send cookie
+    });
+    if (!res.ok) return null;
+    return res.json(); // { id, name, email }
+}

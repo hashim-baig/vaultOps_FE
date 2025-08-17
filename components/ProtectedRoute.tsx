@@ -3,20 +3,37 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/stores/authStore';
+import { fetchCurrentUser } from '@/lib/api/auth';
+import { useQuery } from '@tanstack/react-query';
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
-    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const setUser = useAuthStore((state) => state.setUser);
+    const logout = useAuthStore((state) => state.logout);
     const router = useRouter();
 
+    // Here, use isLoading from React Query for hydration
+    const { data: user, isLoading } = useQuery({
+        queryKey: ['currentUser'],
+        queryFn: fetchCurrentUser,
+    });
+
     useEffect(() => {
-        console.log(isAuthenticated, 'isAuthenticated');
-        if (!isAuthenticated) {
+        if (user) {
+            setUser(user); // This sets isAuthenticated=true in your store
+        } else if (!isLoading) {
+            logout();
+        }
+    }, [user, isLoading, setUser, logout]);
+
+    useEffect(() => {
+        if (!isLoading && !user) {
             router.replace('/login');
         }
-    }, [isAuthenticated, router]);
+    }, [isLoading, user, router]);
 
-    // If not authenticated, prevent page flash
-    if (!isAuthenticated) return null;
+    // Prevent page flash while loading
+    if (isLoading) return null;
+    if (!user) return null;
 
     return <>{children}</>;
 }
